@@ -3,6 +3,8 @@ import chess.engine
 import chess.pgn
 import os
 import pygame
+import ctypes
+import ctypes.wintypes
 
 # Inicijalizacija Pygame-a
 pygame.init()
@@ -157,8 +159,8 @@ def check_draw_conditions(board: chess.Board) -> str:
     return None
 
 def play_again():
-    print("Želite li igrati od novo?")
-    print("1. Da, igraj ponovo.")
+    print("Želite li igrati ponovo?")
+    print("1. Da, ajde još jednu.")
     print("2. Ne, zatvori aplikaciju.")
     choice = 0
     while choice not in (1, 2):
@@ -168,6 +170,12 @@ def play_again():
             pass
     return choice == 1
 
+def get_desktop_path():
+    CSIDL_DESKTOP = 0
+    buf = ctypes.create_unicode_buffer(ctypes.wintypes.MAX_PATH)
+    ctypes.windll.shell32.SHGetFolderPathW(None, CSIDL_DESKTOP, None, 0, buf)
+    return buf.value
+
 def main():
     pygame.init()
     player_color = choose_color()
@@ -176,7 +184,11 @@ def main():
     pygame.display.set_caption("Šah")
 
     board = chess.Board()
-    engine = chess.engine.SimpleEngine.popen_uci("C:\\Users\Public\\Documents\\White_and_Black-main\\komodo-14.1-64bit.exe")
+
+    # Get the path to the Komodo engine using the Desktop folder
+    desktop_path = get_desktop_path()
+    komodo_path = os.path.join(desktop_path, 'White_and_Black-main', 'komodo-14.1-64bit.exe')
+    engine = chess.engine.SimpleEngine.popen_uci(komodo_path)
 
     pieces = load_images()  # Load images for each chess piece
 
