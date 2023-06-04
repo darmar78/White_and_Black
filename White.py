@@ -156,7 +156,20 @@ def check_draw_conditions(board: chess.Board) -> str:
         return "1/2-1/2"
     return None
 
+def play_again():
+    print("Želite li igrati od novo?")
+    print("1. Da, igraj ponovo.")
+    print("2. Ne, zatvori aplikaciju.")
+    choice = 0
+    while choice not in (1, 2):
+        try:
+            choice = int(input("Unesite broj (1 ili 2): "))
+        except ValueError:
+            pass
+    return choice == 1
+
 def main():
+    pygame.init()
     player_color = choose_color()
     
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -232,7 +245,7 @@ def main():
             if check_draw_conditions(board):  
                 break  
 
-    # Set game_result if it's not already set
+    # Set game_rezult if it's not already set
     if game_result is None:
         game_result = set_game_result(board)
 
@@ -242,5 +255,8 @@ def main():
     pygame.quit()
 
 if __name__ == "__main__":
-    main()
+    while True:
+        main()
+        if not play_again():
+            break
 #```
